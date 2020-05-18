@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 import java.util.Scanner;
 
 import OperationClient.User;
-
+import OperationVehicule.Vehicule;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,6 +21,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+
 
 public class ConnexionController {
 	
@@ -68,7 +69,27 @@ public class ConnexionController {
 	
 	private void ConnectScene(User user) throws IOException, SQLException {
 			
+		System.out.println("Que voulez-vous faire ?\n");
+		System.out.println("1) Enregistrer un numéro de plaque d'immatriculation");
+
 		
+
+		Scanner scannerChoix = new Scanner(System.in);
+		System.out.print("Votre choix : ");
+		int choix = scannerChoix.nextInt();
+		
+		switch(choix) {
+		  case 1:
+			  Scanner scannerSaisieImmatriculation = new Scanner(System.in);
+			  System.out.print("Veuillez saisir le numéro de votre plaque d'immatriculation : ");
+			  String immatriculation = scannerSaisieImmatriculation.nextLine();
+			  Vehicule.InsertNewVehicule(immatriculation, refClient);
+			  
+		    break;
+		 
+		  default:break;
+		    // code block
+		}
 		
 		
 		
