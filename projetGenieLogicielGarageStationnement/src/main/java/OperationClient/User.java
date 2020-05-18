@@ -1,5 +1,7 @@
 package OperationClient;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Random;
 
 import BDD.ObjBDD;
@@ -70,7 +72,14 @@ public class User {
 		
 	}
 	
-
+	public static User checkUser(String mailString, String passwordString) throws SQLException {
+		String sqlString = "Select * from client WHERE Mail = '"+mailString+"' AND Password = '"+passwordString+"'";
+		ResultSet rs = ObjBDD.requeteSelect(sqlString);
+		if(rs.next()) {
+			return new User(rs.getInt("idClient"),rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Adresse"), Integer.toString(rs.getInt("NumeroTel")), rs.getString("Mail"), Long.toString(rs.getLong("NumeroCarte")), rs.getString("Password"));
+		}
+		return null;
+	}
 
 	public Integer getClientInteger() {
 		return ClientInteger;
