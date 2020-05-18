@@ -21,7 +21,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-
+import operationParking.Parking;
+import operationReservation.Reservation;
 
 public class ConnexionController {
 	
@@ -71,7 +72,8 @@ public class ConnexionController {
 			
 		System.out.println("Que voulez-vous faire ?\n");
 		System.out.println("1) Enregistrer un numéro de plaque d'immatriculation");
-
+		System.out.println("2) Effectuer une réservation\n");
+		System.out.println("3) Se rendre au parking\n");
 		
 
 		Scanner scannerChoix = new Scanner(System.in);
@@ -86,7 +88,14 @@ public class ConnexionController {
 			  Vehicule.InsertNewVehicule(immatriculation, refClient);
 			  
 		    break;
-		 
+		  case 2:
+			  Reservation.insertNewReservation(new Date(12, 12, 2012), new Date(11, 12, 2007), 15.50, "azer", "refClientString", "refImmatricuclationStr");
+		    break;
+		  case 3:
+			  if(Parking.estComplet()) {
+				  System.out.println("Il n'y a pu de places de parking ! Nous vous invitons à faire marche arrière et revenir plus tard.\n");
+			  }
+		    break;
 		  default:break;
 		    // code block
 		}
