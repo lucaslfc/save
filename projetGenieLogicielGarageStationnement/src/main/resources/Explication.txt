@@ -1,0 +1,3 @@
+Dans le Dossier BDD :
+fichier properties qu'il faut mettre en jour en fonction du pc ou c'est executé
+Créer une BDD avec le nom voulu -> executer le script sql dedans -> mettre a jour le fichier properties

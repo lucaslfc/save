@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.Random;
 
 import BDD.ObjBDD;
+import OperationParking.Parking;
 
 public class User {
 	
@@ -41,7 +42,27 @@ public class User {
 		this.passwordString = passwordString;
 	}
 	
-
+	public boolean verifReservation(String user) {
+		boolean resultat = false;
+		String requete = "SELECT * FROM reservation where'"+user+"'";
+		if(ObjBDD.requeteSelect(requete)!=null) {
+			resultat =true;
+		}
+		return resultat;
+	}
+	
+	public boolean verifPlaceStationnement(String user) throws SQLException {
+		boolean resultat = false;
+		String requete = "SELECT idClient from Client where Nom='"+user+"'";
+		ResultSet restemp = ObjBDD.requeteSelect(requete);	
+		requete = "Select RefPlaceStationnement from reservation where RefPlaceStationnement="+restemp.findColumn("RefPlaceStationnement")+"'";
+		restemp = ObjBDD.requeteSelect(requete);
+		requete = "Select Statut from placestationnement where RefPlaceStationnement="+restemp.findColumn("Statut")+"'";
+		if(requete=="libre") {
+			resultat=true;
+		}
+		return resultat;
+	}
 	
 	
 	public static boolean InsertNewUser(String numeroMembre, String nomString, String prenomString, String adresseString, String numeroTel, String mailString,

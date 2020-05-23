@@ -9,6 +9,8 @@ import java.util.ResourceBundle;
 import java.util.Scanner;
 
 import OperationClient.User;
+import OperationParking.Parking;
+import OperationReservation.Reservation;
 import OperationVehicule.Vehicule;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,8 +23,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import operationParking.Parking;
-import operationReservation.Reservation;
 
 public class ConnexionController {
 	
@@ -71,9 +71,9 @@ public class ConnexionController {
 	private void ConnectScene(User user) throws IOException, SQLException {
 			
 		System.out.println("Que voulez-vous faire ?\n");
-		System.out.println("1) Enregistrer un numéro de plaque d'immatriculation");
-		System.out.println("2) Effectuer une réservation\n");
-		System.out.println("3) Se rendre au parking\n");
+		System.out.println("1) Enregistrer un numÃ©ro de plaque d'immatriculation");
+		System.out.println("2) Effectuer une rÃ©servation\n");
+		//System.out.println("3) Se rendre au parking\n");
 		
 
 		Scanner scannerChoix = new Scanner(System.in);
@@ -82,20 +82,20 @@ public class ConnexionController {
 		
 		switch(choix) {
 		  case 1:
-			  Scanner scannerSaisieImmatriculation = new Scanner(System.in);
-			  System.out.print("Veuillez saisir le numéro de votre plaque d'immatriculation : ");
-			  String immatriculation = scannerSaisieImmatriculation.nextLine();
-			  Vehicule.InsertNewVehicule(immatriculation, refClient);
+			  Vehicule.InsertNewVehicule(refClient);
 			  
 		    break;
 		  case 2:
-			  Reservation.insertNewReservation(new Date(12, 12, 2012), new Date(11, 12, 2007), 15.50, "azer", "refClientString", "refImmatricuclationStr");
+			  Reservation.insertNewReservation();
 		    break;
 		  case 3:
+
+			  /**
 			  if(Parking.estComplet()) {
-				  System.out.println("Il n'y a pu de places de parking ! Nous vous invitons à faire marche arrière et revenir plus tard.\n");
+				  System.out.println("Il n'y a pu de places de parking ! Nous vous invitons Ã Â  faire marche arriÃ¨re et revenir plus tard.\n");
 			  }
 		    break;
+		    **/
 		  default:break;
 		    // code block
 		}

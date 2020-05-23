@@ -1,8 +1,8 @@
-package miage.projetGenieLogicielGarageStationnement;
+package miage.genielogiciel;
 
 import java.io.IOException;
 
-
+import BDD.ObjBDD;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,7 +15,7 @@ public class App extends Application {
 	public void start(Stage primaryStage) {
 		Parent root = null;
         try {
-            root = FXMLLoader.load(getClass().getClassLoader().getResource(""));
+            root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/Connexion.fxml"));
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
             primaryStage.show();
@@ -26,6 +26,12 @@ public class App extends Application {
 	}
 
 	public static void main(String[] args) {
-		
+		try {
+			if(ObjBDD.CreateConnexion()) {
+				launch(args);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

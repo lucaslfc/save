@@ -1,5 +1,7 @@
 package OperationVehicule;
 
+import java.util.Scanner;
+
 import BDD.ObjBDD;
 
 public class Vehicule {
@@ -14,9 +16,18 @@ public class Vehicule {
 	}
 
 	
-	public static boolean InsertNewVehicule(String immatriculation, Integer refClient) {
+	public static boolean InsertNewVehicule(Integer refClient) {
+		
+		Scanner scannerSaisieImmatriculation = new Scanner(System.in);
+		
+		System.out.print("Veuillez saisir le num�ro de votre plaque d'immatriculation : ");
+		String immatriculation = scannerSaisieImmatriculation.nextLine();
+		
 		String sqlString = "Insert into vehicule(Immatriculation, refClient)"
 				+ "VALUES('"+immatriculation+"','"+refClient+"')";
+		
+		scannerSaisieImmatriculation.close();
+		
 		if(ObjBDD.requeteInsert(sqlString)) {
 			return true;
 		}

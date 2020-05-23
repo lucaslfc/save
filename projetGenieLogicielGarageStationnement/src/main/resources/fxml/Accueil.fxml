@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="867.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AccueilController">
+   <children>
+      <Text fx:id="accueilText" layoutX="344.0" layoutY="154.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bonjour" wrappingWidth="249.13671875" />
+      <Button fx:id="testButton" layoutX="318.0" layoutY="266.0" mnemonicParsing="false" onAction="#test" text="Button" />
+   </children>
+</AnchorPane>

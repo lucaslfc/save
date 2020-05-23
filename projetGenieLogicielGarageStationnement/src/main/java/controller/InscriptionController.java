@@ -2,7 +2,10 @@ package controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
 
@@ -73,10 +76,10 @@ public class InscriptionController implements Initializable {
 		if (erreur==0) {
 			String numeroMembre = User.genereNumeroMembre(numTel.getText());
 			if(User.InsertNewUser(numeroMembre, nom.getText(), prenom.getText(), adresse.getText(), numTel.getText(), mail.getText(), numCarte.getText(), password.getText())){
-				SuccessCrea.setText("Votre compte a ÈtÈ crÈe, voici votre numÈro de membre \n\n" + numeroMembre + "\n\nNotez le soigneusement.");
+				SuccessCrea.setText("Votre compte a √©t√© cr√©e, voici votre num√©ro de membre \n\n" + numeroMembre + "\n\nNotez le soigneusement.");
 				ErrorAutre.setText("");
 			}else {
-				ErrorAutre.setText("Erreur avec la BDD, il se peut que l'adresse mail soit dÈj‡ utilisÈ");
+				ErrorAutre.setText("Erreur avec la BDD, il se peut que l'adresse mail soit d√©j√† utilis√©");
 				SuccessCrea.setText("");
 			}
 		}else {

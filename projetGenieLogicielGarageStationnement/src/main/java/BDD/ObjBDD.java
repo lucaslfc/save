@@ -12,7 +12,7 @@ import java.util.Properties;
 
 import com.mysql.cj.jdbc.Driver;
 
-import miage.projetGenieLogicielGarageStationnement.App;
+import miage.genielogiciel.App;
 
 public class ObjBDD {
 	

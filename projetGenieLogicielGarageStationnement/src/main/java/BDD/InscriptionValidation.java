@@ -12,7 +12,7 @@ public class InscriptionValidation {
 		if(matcher.matches() && nom.length()>2 && nom.length()<100) {
 			return null;
 		}
-		return "Nom seulement alphabet && taille entre 2 && 100";
+		return "Nom seulement en caractère alphabétique & taille entre 2-100";
 	}
 	
 	public static String verificationPrenom(String prenom) {
@@ -22,7 +22,7 @@ public class InscriptionValidation {
 		if(matcher.matches() && prenom.length()>2 && prenom.length()<100) {
 			return null;
 		}
-		return "Prenom seulement alphabet && inferieur � 100";
+		return "Prénom seulement en caractère alphabétique & inferieur à 100";
 	}
 	
 	public static String verificationAdresse(String adress) {
