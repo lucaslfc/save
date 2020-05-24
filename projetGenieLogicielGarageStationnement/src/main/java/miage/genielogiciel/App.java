@@ -1,6 +1,9 @@
 package miage.genielogiciel;
 
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import BDD.ObjBDD;
 import javafx.application.Application;
@@ -26,6 +29,9 @@ public class App extends Application {
 	}
 
 	public static void main(String[] args) {
+		
+		
+		
 		try {
 			if(ObjBDD.CreateConnexion()) {
 				launch(args);
