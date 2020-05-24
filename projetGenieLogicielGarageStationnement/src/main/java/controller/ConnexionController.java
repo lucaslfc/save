@@ -73,7 +73,7 @@ public class ConnexionController {
 		System.out.println("Que voulez-vous faire ?\n");
 		System.out.println("1) Enregistrer un numéro de plaque d'immatriculation");
 		System.out.println("2) Effectuer une réservation\n");
-		//System.out.println("3) Se rendre au parking\n");
+		System.out.println("3) Se rendre au parking, sans réservation\n");
 		
 
 		Scanner scannerChoix = new Scanner(System.in);
@@ -82,7 +82,7 @@ public class ConnexionController {
 		
 		switch(choix) {
 		  case 1:
-			  Vehicule.InsertNewVehicule(refClient);
+			  Vehicule.InsertNewVehicule(user.getNumeroMembre());
 			  
 		    break;
 		  case 2:
@@ -90,16 +90,21 @@ public class ConnexionController {
 		    break;
 		  case 3:
 
-			  /**
 			  if(Parking.estComplet()) {
 				  System.out.println("Il n'y a pu de places de parking ! Nous vous invitons à  faire marche arrière et revenir plus tard.\n");
+			  }else {
+				  User.sePresenterParkingSansReservation();
 			  }
 		    break;
-		    **/
+		  case 4:
+			  
+			  
+		    break;
 		  default:break;
-		    // code block
+
+			 
+			  
 		}
-		
 		
 		
 	}

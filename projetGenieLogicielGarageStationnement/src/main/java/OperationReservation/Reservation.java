@@ -1,10 +1,14 @@
 package OperationReservation;
 
-import java.sql.Date;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 import java.util.Scanner;
 
 import BDD.ObjBDD;
+import OperationVehicule.Vehicule;
 
 public class Reservation {
 	
@@ -13,17 +17,23 @@ public class Reservation {
 	private String numeroReservation;
 	private Date dateDebutDate;
 	private Date dateFinDate;
+	private Time heureDebut;
+	private Time heureFin;
 	private Double prixDouble;
 	private String refPlaceStationnementString;
 	private String refClientString;
 	private String refImmatricuclationString;
 	
 	
-	public Reservation(String numeroReservation, Date dateDebutDate, Date dateFinDate, Double prixDouble, String refPlaceStationnementString,
+	
+	
+	public Reservation(String numeroReservation, Date dateDebutDate, Date dateFinDate, Time heureDebut, Time heureFin, Double prixDouble, String refPlaceStationnementString,
 			String refClientString, String refImmatricuclationString) {
 		this.numeroReservation = numeroReservation;
 		this.dateDebutDate = dateDebutDate;
 		this.dateFinDate = dateFinDate;
+		this.heureDebut = heureDebut;
+		this.heureFin = heureFin;
 		this.prixDouble = prixDouble;
 		this.refPlaceStationnementString = refPlaceStationnementString;
 		this.refClientString = refClientString;
@@ -31,9 +41,62 @@ public class Reservation {
 	}
 	
 	
+	public static boolean createNewReservationImmatriculationReconnue(String heureFin, String refImmatriculationString) throws SQLException {
+		
+		String numeroReservation = genereNumeroReservation();
+
+		Date date = new Date();
+		String dateDebutDate= new SimpleDateFormat("yyyy-MM-dd").format(date);
+		
+		String dateFinDate= new SimpleDateFormat("yyyy-MM-dd").format(date);
+		
+		String heureDebut = date.getHours()+":"+date.getMinutes();
+
+		Double prixReservation = 5.00;
+		
+		String refPlaceStationnementString = "";
+		
+		String sqlString = "Insert into reservation(NumeroReservation, DateDebut, DateFin, HeureDebut, HeureFin, Prix, RefPlaceStationnement, RefClient, RefImmatriculation )"
+				+ "VALUES('"+numeroReservation+"','"+dateDebutDate+"','"+dateFinDate+"','"+heureDebut+"','"+heureFin+"','"+prixReservation+"','"+refPlaceStationnementString+"','"+Vehicule.checkUserVehicule(refImmatriculationString)+"','"+refImmatriculationString+"')";
+		
+		
+		if(ObjBDD.requeteInsert(sqlString)) {
+			System.out.print("Une réservation vous a été crée, voici son numéro \n\n" + numeroReservation + "\n\nNotez le soigneusement, au cas où il vous serait demandé..");
+			return true;
+		}
+		return false;
+	}
+	
+	public static boolean createNewReservationImmatriculationNonReconnue(String heureFin, String refClient) throws SQLException {
+			
+			String numeroReservation = genereNumeroReservation();
+	
+			Date date = new Date();
+			String dateDebutDate= new SimpleDateFormat("yyyy-MM-dd").format(date);
+			
+			String dateFinDate= new SimpleDateFormat("yyyy-MM-dd").format(date);
+			
+			String heureDebut = date.getHours()+":"+date.getMinutes();
+	
+			Double prixReservation = 5.00;
+			
+			String refPlaceStationnementString = "";
+			
+			String refImmatriculationString  = "";
+			
+			String sqlString = "Insert into reservation(NumeroReservation, DateDebut, DateFin, HeureDebut, HeureFin, Prix, RefPlaceStationnement, RefClient, RefImmatriculation )"
+					+ "VALUES('"+numeroReservation+"','"+dateDebutDate+"','"+dateFinDate+"','"+heureDebut+"','"+heureFin+"','"+prixReservation+"','"+refPlaceStationnementString+"','"+refClient+"','"+refImmatriculationString+"')";
+			
+			
+			if(ObjBDD.requeteInsert(sqlString)) {
+				System.out.print("Une réservation vous a été crée, voici son numéro \n\n" + numeroReservation + "\n\nNotez le soigneusement, au cas où il vous serait demandé..");
+				return true;
+			}
+			return false;
+		}
 	
 	public static boolean insertNewReservation() {
-		
+				
 		String numeroReservation = genereNumeroReservation();
 
 		Scanner scannerSaisieReservation = new Scanner(System.in);
@@ -43,6 +106,12 @@ public class Reservation {
 		
 		System.out.println("Saisir date de fin (fomat aaaa-mm-jj) : ");
 		String dateFinDate = scannerSaisieReservation.nextLine();
+		
+		System.out.println("Saisir heure de debut (fomat hh:mm) : ");
+		String heureDebut = scannerSaisieReservation.nextLine();
+		
+		System.out.println("Saisir heure de fin (fomat hh:mm) : ");
+		String heureFin = scannerSaisieReservation.nextLine();
 		
 		Double prixReservation = 5.00;
 		
@@ -56,9 +125,8 @@ public class Reservation {
 		String refImmatriculationString = scannerSaisieReservation.nextLine();
 		
 
-		
-		String sqlString = "Insert into reservation(NumeroReservation, DateDebut, DateFin, Prix, RefPlaceStationnement, RefClient, RefImmatriculation )"
-				+ "VALUES('"+numeroReservation+"','"+dateDebutDate+"','"+dateFinDate+"','"+prixReservation+"','"+refPlaceStationnementString+"','"+refClientString+"','"+refImmatriculationString+"')";
+		String sqlString = "Insert into reservation(NumeroReservation, DateDebut, DateFin, HeureDebut, HeureFin, Prix, RefPlaceStationnement, RefClient, RefImmatriculation )"
+				+ "VALUES('"+numeroReservation+"','"+dateDebutDate+"','"+dateFinDate+"','"+heureDebut+"','"+heureFin+"','"+prixReservation+"','"+refPlaceStationnementString+"','"+refClientString+"','"+refImmatriculationString+"')";
 		
 		scannerSaisieReservation.close();
 		
@@ -141,6 +209,32 @@ public class Reservation {
 	public void setNumeroReservation(String numeroReservation) {
 		this.numeroReservation = numeroReservation;
 	}
+
+
+
+	public Time getHeureDebut() {
+		return heureDebut;
+	}
+
+
+
+	public void setHeureDebut(Time heureDebut) {
+		this.heureDebut = heureDebut;
+	}
+
+
+
+	public Time getHeureFin() {
+		return heureFin;
+	}
+
+
+
+	public void setHeureFin(Time heureFin) {
+		this.heureFin = heureFin;
+	}
+
+	
 	
 	
 	

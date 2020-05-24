@@ -2,15 +2,20 @@ package OperationClient;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
+import java.util.Scanner;
 
 import BDD.ObjBDD;
 import OperationParking.Parking;
+import OperationReservation.Reservation;
+import OperationVehicule.Vehicule;
 
 public class User {
 	
 	private Integer ClientInteger;
-	private String numeroMembre;
+	private String numeroMembreString;
 	private String nomString;
 	private String prenomString;
 	private String adresseString;
@@ -42,13 +47,40 @@ public class User {
 		this.passwordString = passwordString;
 	}
 	
-	public boolean verifReservation(String user) {
-		boolean resultat = false;
-		String requete = "SELECT * FROM reservation where'"+user+"'";
-		if(ObjBDD.requeteSelect(requete)!=null) {
-			resultat =true;
+	public User(Integer ClientInteger, String numeroMembreString, String nomString, String prenomString, String adresseString, String numeroTel, String mailString,
+			String numeroCarte, String passwordString) {
+		this.ClientInteger = ClientInteger;
+		this.numeroMembreString = numeroMembreString;
+		this.nomString = nomString;
+		this.prenomString = prenomString;
+		this.adresseString = adresseString;
+		this.numeroTel = numeroTel;
+		this.mailString = mailString;
+		this.numeroCarte = numeroCarte;
+		this.passwordString = passwordString;
+	}
+	
+	public static boolean checkReservation(String refClient) throws SQLException {
+		Date date = new Date();
+		String dateAjourdhui= new SimpleDateFormat("yyyy-MM-dd").format(date);
+		String sqlStringSelect = "Select * from reservation WHERE RefClient = '"+refClient+"' AND DateDebut = '"+dateAjourdhui+"'";
+				
+		ResultSet rs = ObjBDD.requeteSelect(sqlStringSelect);
+		if(rs.next()) {
+			return true;
 		}
-		return resultat;
+		return false;
+	}
+	
+	public static boolean checkNumeroMembre(String numeroMembre) throws SQLException {
+		
+		String sqlStringSelect = "Select * from client WHERE NumeroMembre = '"+numeroMembre+"'";
+				
+		ResultSet rs = ObjBDD.requeteSelect(sqlStringSelect);
+		if(rs.next()) {
+			return true;
+		}
+		return false;
 	}
 	
 	public boolean verifPlaceStationnement(String user) throws SQLException {
@@ -97,10 +129,57 @@ public class User {
 		String sqlString = "Select * from client WHERE Mail = '"+mailString+"' AND Password = '"+passwordString+"'";
 		ResultSet rs = ObjBDD.requeteSelect(sqlString);
 		if(rs.next()) {
-			return new User(rs.getInt("idClient"),rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Adresse"), Integer.toString(rs.getInt("NumeroTel")), rs.getString("Mail"), Long.toString(rs.getLong("NumeroCarte")), rs.getString("Password"));
+			return new User(rs.getInt("idClient"),rs.getString("NumeroMembre"), rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Adresse"), Integer.toString(rs.getInt("NumeroTel")), rs.getString("Mail"), Long.toString(rs.getLong("NumeroCarte")), rs.getString("Password"));
 		}
 		return null;
 	}
+	
+	public static void sePresenterParkingSansReservation() throws SQLException {
+		
+		Scanner scannerCheck = new Scanner(System.in);
+		
+		System.out.println("Saisir la plaque d'immatriculation du véhicule : ");
+		String immatriculationVehicule = scannerCheck.nextLine();
+		// si le numero d'immatriculation est reconnue
+		if(Vehicule.checkVehicule(immatriculationVehicule)) {
+			// on cherche le proprio
+			String proprioVehicule = Vehicule.checkUserVehicule(immatriculationVehicule);
+			// si il n'y  a pas de réservation existnte associée au client qui possède le véhicule
+			if(checkReservation(proprioVehicule)==false) {
+				System.out.println("Veuillez saisir l'heure de départ prévue : ");
+				String heureDepart = scannerCheck.nextLine();
+				Reservation.createNewReservationImmatriculationReconnue(heureDepart, immatriculationVehicule);
+			// sinon on lui dit qu'il avait bien une réservation de faite
+			}else {
+				System.out.println("Vous avez une réservation à ce jour.");
+			}
+		}
+		// si le numero d'immatriculation n'est pas reconnue
+		else {
+			System.out.println("Numéro de plaque non reconnue, veuillez saisir votre numéro de membre : ");
+			String numeroMembre = scannerCheck.nextLine();
+			if(checkNumeroMembre(numeroMembre)) {
+				System.out.println("Veuillez saisir une heure de départ : ");
+				String heureDepart = scannerCheck.nextLine();
+				Reservation.createNewReservationImmatriculationNonReconnue(heureDepart, numeroMembre);
+			} else {
+				System.out.print("Numéro de membre non reconnu, veuillez faire marche arrière et quitter les lieux.");
+			}
+			
+
+		}
+			
+}
+		
+		
+		
+		
+		
+			
+			
+			
+			
+	
 
 	public Integer getClientInteger() {
 		return ClientInteger;
@@ -167,11 +246,11 @@ public class User {
 	}
 
 	public String getNumeroMembre() {
-		return numeroMembre;
+		return numeroMembreString;
 	}
 
 	public void setNumeroMembre(String numeroMembre) {
-		this.numeroMembre = numeroMembre;
+		this.numeroMembreString = numeroMembre;
 	}
 	
 }

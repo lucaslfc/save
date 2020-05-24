@@ -1,22 +1,25 @@
 package OperationVehicule;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 import BDD.ObjBDD;
+import OperationClient.User;
 
 public class Vehicule {
 
 	private Integer VehiculeInteger;
 	private String immatriculationString;
-	private Integer refClientInteger;
+	private String refClientString;
 	
-	public Vehicule(String immatriculationString, Integer refClientInteger) {
+	public Vehicule(String immatriculationString, String refClientString) {
 		this.immatriculationString = immatriculationString;
-		this.refClientInteger = refClientInteger;
+		this.refClientString = refClientString;
 	}
 
 	
-	public static boolean InsertNewVehicule(Integer refClient) {
+	public static boolean InsertNewVehicule(String refClient) {
 		
 		Scanner scannerSaisieImmatriculation = new Scanner(System.in);
 		
@@ -34,6 +37,31 @@ public class Vehicule {
 		return false;
 	}
 
+	
+	public static boolean checkVehicule(String immatriculationVehicule) throws SQLException {
+		String sqlStringSelect = "Select * from vehicule WHERE Immatriculation = '"+immatriculationVehicule+"'";
+		
+	
+		ResultSet rs = ObjBDD.requeteSelect(sqlStringSelect);
+		if(rs.next()) {
+			return true;
+		}
+		return false;
+	}
+	
+	
+	public static String checkUserVehicule(String immatriculationVehicule) throws SQLException {
+		String sqlStringSelect = "Select * from vehicule WHERE Immatriculation = '"+immatriculationVehicule+"'";
+		
+		ResultSet rs = ObjBDD.requeteSelect(sqlStringSelect);
+		if(rs.next()) {
+			String refClient =  rs.getString("refClient");
+			return refClient;
+		}
+		return null;
+	}
+	
+	
 
 	public Integer getVehiculeInteger() {
 		return VehiculeInteger;
@@ -55,13 +83,13 @@ public class Vehicule {
 	}
 
 
-	public Integer getRefClientInteger() {
-		return refClientInteger;
+	public String getRefClientInteger() {
+		return refClientString;
 	}
 
 
-	public void setRefClientInteger(Integer refClientInteger) {
-		this.refClientInteger = refClientInteger;
+	public void setRefClientInteger(String refClientInteger) {
+		this.refClientString = refClientString;
 	}
 	
 	
