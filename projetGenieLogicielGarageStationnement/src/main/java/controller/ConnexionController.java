@@ -74,6 +74,7 @@ public class ConnexionController {
 		System.out.println("1) Enregistrer un numéro de plaque d'immatriculation");
 		System.out.println("2) Effectuer une réservation\n");
 		System.out.println("3) Se rendre au parking, sans réservation\n");
+		System.out.println("4) Se rendre au parking, avec réservation\n");
 		
 
 		Scanner scannerChoix = new Scanner(System.in);

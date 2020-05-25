@@ -60,6 +60,14 @@ public class ObjBDD {
 	}
 	
 	public static boolean requeteUpdate(String query) {
+		Statement smt = null;
+		try {
+			smt = ObjBDD.connection.createStatement();
+			smt.executeUpdate(query);
+		} catch (SQLException e) {
+			//e.printStackTrace();
+			return false;
+		}
 		return true;
 	}
 	
@@ -80,41 +88,6 @@ public class ObjBDD {
 		return rs;
 	}
 	
-	
-	
-	
-	
-	
-	public static void requeteUpdatePlaceStationnement(String query) {
-		
-		Statement smt = null;
-	    try {
-	    	
-	        @SuppressWarnings("null")
-			boolean results = smt.execute(query);
-	        int rsCount = 0;
-
-	        // Loop through the available result sets.
-	        do {
-	            if (results) {
-	                ResultSet rs = smt.getResultSet();
-	                rsCount++;
-
-	                // Show data from the result set.
-	                System.out.println("RESULT SET #" + rsCount);
-	                while (rs.next()) {
-	                    System.out.println(rs.getString("RefPlaceStationnement") + ", " + rs.getString("Statut"));
-	                }
-	            }
-	            System.out.println();
-	            results = smt.getMoreResults();
-	        } while (results);
-	    }
-	    // Handle any errors that may have occurred.
-	    catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-	}
 	
 	
 	

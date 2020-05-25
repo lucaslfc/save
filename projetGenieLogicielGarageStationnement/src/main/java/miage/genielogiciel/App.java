@@ -1,11 +1,15 @@
 package miage.genielogiciel;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import BDD.ObjBDD;
+import BDD.TriggerBDD;
+import OperationClient.User;
+import OperationVehicule.Vehicule;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -28,12 +32,14 @@ public class App extends Application {
         }
 	}
 
-	public static void main(String[] args) {
-		
-		
+	public static void main(String[] args) throws SQLException{
 		
 		try {
 			if(ObjBDD.CreateConnexion()) {
+				
+				ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+				executor.scheduleAtFixedRate(TriggerBDD.updateStatutPlace, 0, 5, TimeUnit.SECONDS);
+				
 				launch(args);
 			}
 		} catch (IOException e) {

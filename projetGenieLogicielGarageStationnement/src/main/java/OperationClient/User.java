@@ -10,7 +10,9 @@ import java.util.Scanner;
 import BDD.ObjBDD;
 import OperationParking.Parking;
 import OperationReservation.Reservation;
+import OperationTarif.Tarif;
 import OperationVehicule.Vehicule;
+import OperationTarif.Tarif;
 
 public class User {
 	
@@ -83,7 +85,7 @@ public class User {
 		return false;
 	}
 	
-	public boolean verifPlaceStationnement(String user) throws SQLException {
+	public static boolean verifPlaceStationnement(String user) throws SQLException {
 		boolean resultat = false;
 		String requete = "SELECT idClient from Client where Nom='"+user+"'";
 		ResultSet restemp = ObjBDD.requeteSelect(requete);	
@@ -166,13 +168,103 @@ public class User {
 				System.out.print("Numéro de membre non reconnu, veuillez faire marche arrière et quitter les lieux.");
 			}
 			
-
 		}
-			
+				
 }
 		
+	
+
+public static boolean checkRetard(String refClient) throws SQLException {
+	
+	Date date = new Date();
+	String dateDebutDate= new SimpleDateFormat("yyyy-MM-dd").format(date);
+	String sqlStringInsert = "SELECT * from reservation where DateDebut = '"+dateDebutDate+"' and DelaiAttente = 1 and refCient = '"+refClient+"' ";
+	ResultSet rs = ObjBDD.requeteSelect(sqlStringInsert);
+	if(ObjBDD.requeteInsert(sqlStringInsert)) {
+		String refPlaceStationnement = rs.getString("RefPlaceStationnement");
+		String sqlSstringUpdate = "update placeStationnement set Statut = 'occupée' where RefPlaceStationnement = '"+refPlaceStationnement+"'";
+		ObjBDD.requeteUpdate(sqlSstringUpdate);
+		return true;
+	}
+	return false;
+}
+
+public static boolean paiementSupplement(String refClient) throws SQLException {
+	
+	Date date = new Date();
+	String heureDebut = date.getHours()+":"+date.getMinutes();
+	String dateDebutDate= new SimpleDateFormat("yyyy-MM-dd").format(date);
+	String sqlStringInsert = "update reservation set payeOuNon = 1 where RefClient = '"+refClient+"' and DateDebut = '"+dateDebutDate+"' ";
+	ResultSet rs = ObjBDD.requeteSelect(sqlStringInsert);
+	if(ObjBDD.requeteInsert(sqlStringInsert)) {
+		
+		return true;
+	}
+	return false;
+
+			 
+			  
+}
+		
+public static boolean checkRetardAttenteDepassee(String refClient) throws SQLException {
+	
+	Date date = new Date();
+	String heureDebut = date.getHours()+":"+date.getMinutes();
+	String dateDebutDate= new SimpleDateFormat("yyyy-MM-dd").format(date);
+	String sqlStringInsert = "SELECT * from reservation where DateDebut = '"+dateDebutDate+"' and DelaiAttente = 1 and heureDelaiAttenteMax > '"+heureDebut+"' and refCient = '"+refClient+"' ";
+	ResultSet rs = ObjBDD.requeteSelect(sqlStringInsert);
+	if(ObjBDD.requeteInsert(sqlStringInsert)) {
+		Scanner scannerChoix = new Scanner(System.in);
+		System.out.print("Vous avez dépassé la période d'attente, vous devez donc payer un supplément si vous souhaitez maintenir la réservation : ");
+		System.out.print("1) je souhaite payer le supplément");
+		System.out.print("2) je ne souhaite pas payer le supplément");
+		int choixSupplement = scannerChoix.nextInt();
+		
+		switch(choixSupplement) {
+		  case 1:
+			  
+			  System.out.print("Veuillez payer le supplément de " + Tarif.getPrix() + "€");
+			  
+			  
+		    break;
+		  case 2 :
+			  System.out.print("Veuillez reculer et sortir du parking.");
+		    break;
+		  default:break;
+
+			 
+			  
+		}
 		
 		
+		return true;
+	}
+	return false;
+}
+
+	
+	/**
+public static void sePresenterParkingAvecReservation() throws SQLException {
+		
+	Scanner scannerCheck = new Scanner(System.in);
+		
+	System.out.println("Saisir votre numéro membre : ");
+	String numeroMembre = scannerCheck.nextLine();
+	
+	System.out.println("Saisir votre numéro de réservation : ");
+	String numeroReservation = scannerCheck.nextLine();
+	
+	if(checkReservation(numeroMembre)) {
+		if() {
+			
+		}
+		
+	}
+		
+		
+
+}
+**/			
 		
 		
 			
