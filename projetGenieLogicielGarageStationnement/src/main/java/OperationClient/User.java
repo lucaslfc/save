@@ -3,12 +3,15 @@ package OperationClient;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.Random;
 import java.util.Scanner;
 
 import BDD.ObjBDD;
 import OperationParking.Parking;
+import OperationPlaceStationnement.PlaceStationnement;
 import OperationReservation.Reservation;
 import OperationTarif.Tarif;
 import OperationVehicule.Vehicule;
@@ -205,42 +208,85 @@ public static boolean paiementSupplement(String refClient) throws SQLException {
 			 
 			  
 }
+
+
+public static boolean updateTarifReservation(String refClient) throws SQLException {
+	
+	Date date = new Date();
+	String dateDebutDate= new SimpleDateFormat("yyyy-MM-dd").format(date);
+	String sqlStringInsert = "SELECT * from reservation where DateDebut = '"+dateDebutDate+"' and DelaiAttente = 1 and refCient = '"+refClient+"' ";
+	ResultSet rs = ObjBDD.requeteSelect(sqlStringInsert);
+	if(ObjBDD.requeteInsert(sqlStringInsert)) {
+		String refPlaceStationnement = rs.getString("RefPlaceStationnement");
+		String sqlSstringUpdate = "update placeStationnement set Statut = 'occupée' where RefPlaceStationnement = '"+refPlaceStationnement+"'";
+		ObjBDD.requeteUpdate(sqlSstringUpdate);
+		return true;
+	}
+	return false;
+}
 		
-public static boolean checkRetardAttenteDepassee(String refClient) throws SQLException {
+public static boolean checkRetardAttenteNonDepassee(String refClient) throws SQLException {
 	
 	Date date = new Date();
 	String heureDebut = date.getHours()+":"+date.getMinutes();
 	String dateDebutDate= new SimpleDateFormat("yyyy-MM-dd").format(date);
 	String sqlStringInsert = "SELECT * from reservation where DateDebut = '"+dateDebutDate+"' and DelaiAttente = 1 and heureDelaiAttenteMax > '"+heureDebut+"' and refCient = '"+refClient+"' ";
 	ResultSet rs = ObjBDD.requeteSelect(sqlStringInsert);
+	
 	if(ObjBDD.requeteInsert(sqlStringInsert)) {
 		Scanner scannerChoix = new Scanner(System.in);
-		System.out.print("Vous avez dépassé la période d'attente, vous devez donc payer un supplément si vous souhaitez maintenir la réservation : ");
+		System.out.print("Vous êtes arrivé en retard mais avant la fin de période d'attente, vous devez donc payer un supplément si vous souhaitez maintenir la réservation : ");
 		System.out.print("1) je souhaite payer le supplément");
 		System.out.print("2) je ne souhaite pas payer le supplément");
 		int choixSupplement = scannerChoix.nextInt();
 		
 		switch(choixSupplement) {
 		  case 1:
-			  
-			  System.out.print("Veuillez payer le supplément de " + Tarif.getPrix() + "€");
-			  
-			  
+			  System.out.print("Veuillez payer le supplément de " + Tarif.prixMaintien() + "€");
 		    break;
 		  case 2 :
 			  System.out.print("Veuillez reculer et sortir du parking.");
 		    break;
-		  default:break;
-
-			 
-			  
+		  default:break;	  
 		}
-		
 		
 		return true;
 	}
 	return false;
 }
+
+
+
+public static boolean checkRetardAttenteDepassee(String refClient) throws SQLException {
+	
+	Date date = new Date();
+	String heureDebut = date.getHours()+":"+date.getMinutes();
+	String dateDebutDate= new SimpleDateFormat("yyyy-MM-dd").format(date);
+	String sqlStringInsert = "SELECT * from reservation where DateDebut = '"+dateDebutDate+"' and delaiAttenteDepasse = 1 and heureDelaiAttenteMax < '"+heureDebut+"' and refCient = '"+refClient+"' ";
+	ResultSet rs = ObjBDD.requeteSelect(sqlStringInsert);
+	if(rs.next()) {
+		
+		Scanner scannerChoix = new Scanner(System.in);
+		System.out.print("Vous êtes arrivé au-delà du délai d'attente après le début de la période réservée. Veuillez nous dire combien de temps souhaitez vous rester : ");
+		Integer choixDuree = scannerChoix.nextInt();
+		
+		LocalTime heureDebutTime = LocalTime.parse(heureDebut);
+		LocalTime heureDebutPlusDuree = heureDebutTime.plusMinutes(choixDuree);
+		long diffHeure = Duration.between(heureDebutTime, heureDebutPlusDuree).toMinutes();
+		
+		
+		if (PlaceStationnement.checkPlaceDisponible() && PlaceStationnement.checkDisponibilitePlacePreciseIntervalle(PlaceStationnement.renvoiePlaceDispo(), heureDebutPlusDuree.toString())) {
+			System.out.print("Veuillez vous garer à la place : "+PlaceStationnement.attribuePlace(PlaceStationnement.renvoiePlaceDispo(), heureDebutPlusDuree.toString()));
+			System.out.print("Après avoir payé la somme de : " + diffHeure*Tarif.prixMinute() + "€");
+			
+			
+		}
+		
+		return true;
+	}
+	return false;
+}
+
 
 	
 	/**
