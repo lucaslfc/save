@@ -3,11 +3,15 @@ package OperationReservation;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.Random;
 import java.util.Scanner;
 
 import BDD.ObjBDD;
+import OperationPlaceStationnement.PlaceStationnement;
+import OperationTarif.Tarif;
 import OperationVehicule.Vehicule;
 
 public class Reservation {
@@ -52,7 +56,10 @@ public class Reservation {
 		
 		String heureDebut = date.getHours()+":"+date.getMinutes();
 
-		Double prixReservation = 5.00;
+		LocalTime heureDebutLocalTime = LocalTime.parse(heureDebut);
+		LocalTime heureFinLocalTime = LocalTime.parse(heureFin);
+		long HeureDebutFinLocalTime = Duration.between(heureDebutLocalTime, heureFinLocalTime).toMinutes();
+		double prixReservation = HeureDebutFinLocalTime*Tarif.prixMinute();
 		
 		String refPlaceStationnementString = "";
 		
@@ -78,7 +85,10 @@ public class Reservation {
 			
 			String heureDebut = date.getHours()+":"+date.getMinutes();
 	
-			Double prixReservation = 5.00;
+			LocalTime heureDebutLocalTime = LocalTime.parse(heureDebut);
+			LocalTime heureFinLocalTime = LocalTime.parse(heureFin);
+			long HeureDebutFinLocalTime = Duration.between(heureDebutLocalTime, heureFinLocalTime).toMinutes();
+			double prixReservation = HeureDebutFinLocalTime*Tarif.prixMinute();
 			
 			String refPlaceStationnementString = "";
 			
@@ -95,7 +105,7 @@ public class Reservation {
 			return false;
 		}
 	
-	public static boolean insertNewReservation() {
+	public static boolean insertNewReservation() throws SQLException {
 				
 		String numeroReservation = genereNumeroReservation();
 
@@ -113,10 +123,13 @@ public class Reservation {
 		System.out.println("Saisir heure de fin (fomat hh:mm) : ");
 		String heureFin = scannerSaisieReservation.nextLine();
 		
-		Double prixReservation = 5.00;
+		LocalTime heureDebutLocalTime = LocalTime.parse(heureDebut);
+		LocalTime heureFinLocalTime = LocalTime.parse(heureFin);
+		long HeureDebutFinLocalTime = Duration.between(heureDebutLocalTime, heureFinLocalTime).toMinutes();
+		double prixReservation = HeureDebutFinLocalTime*Tarif.prixMinute();
 		
-		System.out.println("Saisir place de stationnement : ");
-		String refPlaceStationnementString = scannerSaisieReservation.nextLine();
+		String refPlaceStationnementString = PlaceStationnement.attribuePlaceLorsReservation(PlaceStationnement.renvoiePlaceDispo(), dateDebutDate, heureDebut, heureFin);
+
 		
 		System.out.println("Saisir votre numéro membre : ");
 		String refClientString = scannerSaisieReservation.nextLine();
@@ -158,6 +171,14 @@ public class Reservation {
 	        return numeroReservation;
 			
 	}
+	
+	
+public static void updatePaiementReservation(String numReservation) {
+		
+	String sqlStringUpdatePaiement = "update reservation set estPayeeOuNon = 1 where NumeroReservation = '"+numReservation+"' ";
+	ObjBDD.requeteUpdate(sqlStringUpdatePaiement);
+}
+
 	
 	public Integer getReservationInteger() {
 		return ReservationInteger;

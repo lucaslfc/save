@@ -70,11 +70,12 @@ public class ConnexionController {
 	
 	private void ConnectScene(User user) throws IOException, SQLException {
 			
-		System.out.println("Que voulez-vous faire ?\n");
-		System.out.println("1) Enregistrer un numéro de plaque d'immatriculation");
-		System.out.println("2) Effectuer une réservation\n");
-		System.out.println("3) Se rendre au parking, sans réservation\n");
-		System.out.println("4) Se rendre au parking, avec réservation\n");
+		System.out.print("Que voulez-vous faire ?\n");
+		System.out.print("1) Enregistrer un numéro de plaque d'immatriculation");
+		System.out.print("2) Effectuer une réservation\n");
+		System.out.print("3) Se rendre au parking, sans réservation\n");
+		System.out.print("4) Se rendre au parking, avec réservation\n");
+		System.out.println("5) Sortir du parking\n");
 		
 
 		Scanner scannerChoix = new Scanner(System.in);
@@ -101,10 +102,11 @@ public class ConnexionController {
 			  
 			  
 		    break;
-		  default:break;
-
-			 
+		  case 5:
+			  User.sortirDuParking();  
 			  
+			    break;
+		  default:break;			  
 		}
 		
 		

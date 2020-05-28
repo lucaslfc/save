@@ -41,6 +41,38 @@ public class Tarif {
 		return prix;
 	}
 	
+	public static double prixDepassementMinoree() throws SQLException {
+		double prix = 0;
+		String sqlString = "select prix FROM tarif where libelleTarif = 'tarifDepassementMinoree' ";
+		ResultSet rs = ObjBDD.requeteSelect(sqlString);
+		if(rs.next()) {
+			prix = rs.getDouble("prix");
+		}
+		
+		return prix;
+	}
+	
+	public static double prixDepassementMajoree() throws SQLException {
+		double prix = 0;
+		String sqlString = "select prix FROM tarif where libelleTarif = 'tarifDepassementMajoree' ";
+		ResultSet rs = ObjBDD.requeteSelect(sqlString);
+		if(rs.next()) {
+			prix = rs.getDouble("prix");
+		}
+		
+		return prix;
+	}
+	
+	
+	public static double round(double value, int places) {
+	    if (places < 0) throw new IllegalArgumentException();
+
+	    long factor = (long) Math.pow(10, places);
+	    value = value * factor;
+	    long tmp = Math.round(value);
+	    return (double) tmp / factor;
+	}
+	
 	
 	public Integer getTarifInteger() {
 		return TarifInteger;

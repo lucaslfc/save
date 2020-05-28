@@ -45,7 +45,9 @@ public class App extends Application {
 			if(ObjBDD.CreateConnexion()) {
 				
 				ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-				executor.scheduleAtFixedRate(TriggerBDD.updateStatutPlace, 0, 5, TimeUnit.SECONDS);
+				executor.scheduleAtFixedRate(TriggerBDD.updateStatutPlace, 0, 5, TimeUnit.SECONDS);		
+			
+				
 				launch(args);
 			}
 		} catch (IOException e) {

@@ -233,7 +233,7 @@ public static boolean checkRetardAttenteNonDepassee(String refClient) throws SQL
 	String sqlStringInsert = "SELECT * from reservation where DateDebut = '"+dateDebutDate+"' and DelaiAttente = 1 and heureDelaiAttenteMax > '"+heureDebut+"' and refCient = '"+refClient+"' ";
 	ResultSet rs = ObjBDD.requeteSelect(sqlStringInsert);
 	
-	if(ObjBDD.requeteInsert(sqlStringInsert)) {
+	if(rs.next()) {
 		Scanner scannerChoix = new Scanner(System.in);
 		System.out.print("Vous êtes arrivé en retard mais avant la fin de période d'attente, vous devez donc payer un supplément si vous souhaitez maintenir la réservation : ");
 		System.out.print("1) je souhaite payer le supplément");
@@ -243,6 +243,13 @@ public static boolean checkRetardAttenteNonDepassee(String refClient) throws SQL
 		switch(choixSupplement) {
 		  case 1:
 			  System.out.print("Veuillez payer le supplément de " + Tarif.prixMaintien() + "€");
+			  String prixAvantSupplement = rs.getString("Prix");
+			  String idReservation = rs.getString("idReservation");
+			  int supplementToInt = Integer.parseInt(Tarif.prixMaintien());
+			  int prixToInt = Integer.parseInt(prixAvantSupplement);
+			  int prixFinal = prixToInt + supplementToInt;
+			  String sqlStringSelect = "UPDATE reservation SET Prix = '"+prixFinal+"' WHERE  idReservation = '"+idReservation+"' ";
+			  ObjBDD.requeteUpdate(sqlStringSelect);
 		    break;
 		  case 2 :
 			  System.out.print("Veuillez reculer et sortir du parking.");
@@ -286,6 +293,98 @@ public static boolean checkRetardAttenteDepassee(String refClient) throws SQLExc
 	}
 	return false;
 }
+
+
+public static boolean sortirDuParking() throws SQLException {
+	
+	boolean res = false;
+	Scanner scannerNumeroReservation = new Scanner(System.in);
+	System.out.print("Veuillez renseigner le numéro de réservation : ");
+	String numReservation = scannerNumeroReservation.nextLine();
+	
+	String sqlStringInsert = "select * from reservation where NumeroReservation = '"+numReservation+"' ";
+	ResultSet rs = ObjBDD.requeteSelect(sqlStringInsert);
+	
+	if(rs.next()) {
+		
+		Date date = new Date();
+		String minutes;
+		
+		if(date.getMinutes() < 10) {
+			minutes = "0"+ String.valueOf(date.getMinutes());
+		} else {
+			minutes = String.valueOf(date.getMinutes());
+		}
+		String heureCourante = date.getHours()+":"+minutes;
+		String heureFin = rs.getString("HeureFin");
+		double tarifReservation = rs.getDouble("Prix");
+		String refPlaceStationnement = rs.getString("RefPlaceStationnement");
+		
+		LocalTime heureCouranteLocalTime = LocalTime.parse(heureCourante);
+		LocalTime heureFinLocalTime = LocalTime.parse(heureFin);
+		long diffHeureCouranteFinReserv = Duration.between(heureFinLocalTime, heureCouranteLocalTime).toMinutes();
+		
+		if(heureFinLocalTime.compareTo(heureCouranteLocalTime) > 0) {
+			
+			System.out.println("Veuillez payer la somme de : " + tarifReservation + "€");
+			// requête réservation payée
+			Reservation.updatePaiementReservation(numReservation);
+			// requête qui change etat de la place
+			PlaceStationnement.updateStatutPlaceDispo(refPlaceStationnement);
+			
+			System.out.println("Merci de votre visite, à bientôt.");
+			return true;
+			
+		}else if(heureFinLocalTime.compareTo(heureCouranteLocalTime) < 0) {
+			
+			if(diffHeureCouranteFinReserv < 60 ) {
+				
+				System.out.println("Vous n'êtes pas parti comme prévu après l'expiration de votre période réservée. Vous allez devoir payer un supplément de : " + diffHeureCouranteFinReserv*Tarif.prixDepassementMinoree() + "€");
+				System.out.print("Le prix total de votre réservation vous revient donc à : " + Tarif.round(tarifReservation+(diffHeureCouranteFinReserv*Tarif.prixDepassementMinoree()), 2) + "€");
+				
+				// requête réservation payée
+				Reservation.updatePaiementReservation(numReservation);
+				// requête qui change etat de la place
+				PlaceStationnement.updateStatutPlaceDispo(refPlaceStationnement);
+				
+			} else {
+				
+				System.out.println("Vous n'êtes pas parti comme prévu après l'expiration de votre période réservée. Vous allez devoir payer un supplément de : " + diffHeureCouranteFinReserv*Tarif.prixDepassementMajoree() + "€");
+				System.out.println("Le prix total de votre réservation vous revient donc à : " + Tarif.round(tarifReservation+(diffHeureCouranteFinReserv*Tarif.prixDepassementMajoree()), 2) + "€");
+				
+				// requête réservation payée
+				Reservation.updatePaiementReservation(numReservation);
+				// requête qui change etat de la place
+				PlaceStationnement.updateStatutPlaceDispo(refPlaceStationnement);
+			
+			}
+
+			
+		} else {
+			
+			System.out.println("Veuillez payer la somme de : " + tarifReservation + "€");
+			// requête réservation payée
+			Reservation.updatePaiementReservation(numReservation);
+			// requête qui change etat de la place
+			PlaceStationnement.updateStatutPlaceDispo(refPlaceStationnement);
+			
+			System.out.println("Merci de votre visite, à bientôt.");
+			res = true;
+			return res;
+			
+		}
+		
+		
+	} else {
+		System.out.print("Numéro de réservation inconnue, veuillez ressayer ou vous rendre à l'acceuil afin de déboquer la situation.");
+		return false;
+		
+	}
+	
+	return res;
+	
+}
+
 
 
 	
