@@ -2,6 +2,7 @@ package OperationTarif;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import BDD.ObjBDD;
 import OperationClient.User;
@@ -62,6 +63,23 @@ public class Tarif {
 		
 		return prix;
 	}
+	
+public static ArrayList<Tarif> afficherTarifActuel() throws SQLException {
+		
+		ArrayList<Tarif> listeTarif = new ArrayList<Tarif>(); 
+		
+		String sqlStringSelect = "SELECT * FROM tarif ";
+		ResultSet rs = ObjBDD.requeteSelect(sqlStringSelect);
+		
+		while(rs.next()) {
+			Tarif tarifAdd = new Tarif(rs.getInt("idTarif"), rs.getString("libelleTarif"), rs.getDouble("prix"));
+			listeTarif.add(tarifAdd);
+			
+		}
+		
+		return listeTarif;
+	}
+	
 	
 	
 	public static double round(double value, int places) {
