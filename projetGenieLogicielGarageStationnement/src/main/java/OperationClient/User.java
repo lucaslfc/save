@@ -388,28 +388,37 @@ public static boolean sortirDuParking() throws SQLException {
 
 
 	
-	/**
 public static void sePresenterParkingAvecReservation() throws SQLException {
 		
-	Scanner scannerCheck = new Scanner(System.in);
+	Scanner scannerNumeroReservation = new Scanner(System.in);
 		
-	System.out.println("Saisir votre numéro membre : ");
-	String numeroMembre = scannerCheck.nextLine();
+	System.out.print("Veuillez renseigner le numéro de réservation : ");
+	String numReservation = scannerNumeroReservation.nextLine();
 	
-	System.out.println("Saisir votre numéro de réservation : ");
-	String numeroReservation = scannerCheck.nextLine();
+	String sqlStringSelectReservation = "select * from reservation where NumeroReservation = '"+numReservation+"' ";
+	ResultSet rs = ObjBDD.requeteSelect(sqlStringSelectReservation);
 	
-	if(checkReservation(numeroMembre)) {
-		if() {
-			
+	if(rs.next()) {
+		String refPlace = rs.getString("RefPlaceStationnement");
+		String sqlStringSelectStatutPlace = "select Statut from placestationnement where RefPlaceStationnement = '"+refPlace+"' ";
+		ResultSet rsStatut = ObjBDD.requeteSelect(sqlStringSelectStatutPlace);
+		String statutPlace = rsStatut.getString("Statut");
+		
+		if(statutPlace=="occupée" && Parking.estComplet()) {
+			System.out.println("En raison d'une surréservation, votre emplacement n'est pas disiponible. Veuillez nous excuser pour le désagrément et sortir du parking.");
+			System.out.print("La facture de cette réservation ne vous sera pas appliqué.");
+			Reservation.updatePaiementReservation(numReservation);
 		}
 		
+		
+	} else {
+		System.out.print("La barrière va s'ouvrir, veuillez rentrer et vous garer à votre place");
 	}
 		
 		
 
 }
-**/			
+	
 		
 		
 			

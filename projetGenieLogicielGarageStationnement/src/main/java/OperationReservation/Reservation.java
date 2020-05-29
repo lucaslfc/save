@@ -61,14 +61,15 @@ public class Reservation {
 		long HeureDebutFinLocalTime = Duration.between(heureDebutLocalTime, heureFinLocalTime).toMinutes();
 		double prixReservation = HeureDebutFinLocalTime*Tarif.prixMinute();
 		
-		String refPlaceStationnementString = "";
+		String refPlaceStationnementString = PlaceStationnement.attribuePlaceLorsReservation(PlaceStationnement.renvoiePlaceDispo(), dateDebutDate, heureDebut, heureFin);
 		
 		String sqlString = "Insert into reservation(NumeroReservation, DateDebut, DateFin, HeureDebut, HeureFin, Prix, RefPlaceStationnement, RefClient, RefImmatriculation )"
 				+ "VALUES('"+numeroReservation+"','"+dateDebutDate+"','"+dateFinDate+"','"+heureDebut+"','"+heureFin+"','"+prixReservation+"','"+refPlaceStationnementString+"','"+Vehicule.checkUserVehicule(refImmatriculationString)+"','"+refImmatriculationString+"')";
 		
 		
 		if(ObjBDD.requeteInsert(sqlString)) {
-			System.out.print("Une réservation vous a été crée, voici son numéro \n\n" + numeroReservation + "\n\nNotez le soigneusement, au cas où il vous serait demandé..");
+			System.out.print("Une réservation vous a été crée, voici son numéro \n\n" + numeroReservation + "\n\nNotez le soigneusement, au cas où il vous serait demandé.");
+			System.out.print("Votre place de stationnement est " + refPlaceStationnementString + ".");
 			return true;
 		}
 		return false;
@@ -90,7 +91,7 @@ public class Reservation {
 			long HeureDebutFinLocalTime = Duration.between(heureDebutLocalTime, heureFinLocalTime).toMinutes();
 			double prixReservation = HeureDebutFinLocalTime*Tarif.prixMinute();
 			
-			String refPlaceStationnementString = "";
+			String refPlaceStationnementString = PlaceStationnement.attribuePlaceLorsReservation(PlaceStationnement.renvoiePlaceDispo(), dateDebutDate, heureDebut, heureFin);
 			
 			String refImmatriculationString  = "";
 			
@@ -99,7 +100,8 @@ public class Reservation {
 			
 			
 			if(ObjBDD.requeteInsert(sqlString)) {
-				System.out.print("Une réservation vous a été crée, voici son numéro \n\n" + numeroReservation + "\n\nNotez le soigneusement, au cas où il vous serait demandé..");
+				System.out.print("Une réservation vous a été crée, voici son numéro \n\n" + numeroReservation + "\n\nNotez le soigneusement, au cas où il vous serait demandé.");
+				System.out.print("Votre place de stationnement est " + refPlaceStationnementString + ".");
 				return true;
 			}
 			return false;
@@ -145,6 +147,7 @@ public class Reservation {
 		
 		if(ObjBDD.requeteInsert(sqlString)) {
 			System.out.print("Votre réservation a été effectuée, voici son numéro \n\n" + numeroReservation + "\n\nNotez le soigneusement.");
+			System.out.print("Votre place de stationnement est " + refPlaceStationnementString + ".");
 			return true;
 		}
 		return false;

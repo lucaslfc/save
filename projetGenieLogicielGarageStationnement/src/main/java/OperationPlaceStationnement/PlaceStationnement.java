@@ -103,11 +103,17 @@ public class PlaceStationnement {
 	public static boolean checkPlaceDisponible() throws SQLException {
 		
 		String sqlStringSelect = "select * from placestationnement where Statut = 'disponible' ";
+		
 		ResultSet rs = ObjBDD.requeteSelect(sqlStringSelect);
 		if(rs.next()) {
 			
+			String sqlStringUpdateParkingIncomplet = "update parking set Statut = 'incomplet'";
+			ObjBDD.requeteSelect(sqlStringUpdateParkingIncomplet);
 			return true;
 		}
+		
+		String sqlStringUpdate = "update parking set Statut = 'complet'";
+		ObjBDD.requeteSelect(sqlStringSelect);
 		return false;
 	}
 	
